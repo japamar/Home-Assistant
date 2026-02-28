@@ -392,7 +392,7 @@ script:
               input_boolean.turn_on
             {% endif %}
         data_template:
-          entity_id: input_boolean.cycle{{ cycle }}_enabled
+          entity_id: input_boolean.cycle{{ cycle }}_enable
 
 
   #==============================
