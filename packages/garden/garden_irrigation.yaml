@@ -76,12 +76,8 @@ automation:
         state: 'on'
 
     action:
-      - service: script.irrigation_run_a_cycle
-        data_template:
-          cycle: 1
-
-      - service: script.update_next_runtime
-        data_template:
+      - service: script.irrigation_run_scheduled_cycle
+        data:
           cycle: 1
 
   #=== Cycle 2
@@ -102,12 +98,8 @@ automation:
         state: 'on'
 
     action:
-      - service: script.irrigation_run_a_cycle
-        data_template:
-          cycle: 2
-
-      - service: script.update_next_runtime
-        data_template:
+      - service: script.irrigation_run_scheduled_cycle
+        data:
           cycle: 2
 
 
@@ -196,6 +188,8 @@ automation:
 
       #=== Wait until script is finished
       - wait_template: "{{ is_state('script.irrigation_run_a_cycle', 'off') }}"
+        timeout: "06:00:00"
+        continue_on_timeout: false
 
       #=== Turn off both manual run booleans (in case one was turned on
       #=== while the other was already running)
@@ -307,6 +301,22 @@ automation:
 #============
 script:
 
+  #======================================
+  #=== Script to run a scheduled cycle
+  #=== and update its next runtime
+  #=== is passed:
+  #===   {{ cycle }}
+  #======================================
+  irrigation_run_scheduled_cycle:
+    sequence:
+      - service: script.irrigation_run_a_cycle
+        data:
+          cycle: '{{ cycle }}'
+
+      - service: script.update_next_runtime
+        data:
+          cycle: '{{ cycle }}'
+
   #==========================
   #=== Script to run a cycle
   #=== is passed:
@@ -329,50 +339,19 @@ script:
         data_template:  
           entity_id: input_boolean.cycle{{ cycle }}_running
 
-      #=== Call the script to irrigate zone 1
-      - service: script.irrigation_irrigate_a_zone
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: 1
+      #=== Run all zones sequentially
+      - repeat:
+          count: 5
+          sequence:
+            - service: script.irrigation_irrigate_a_zone
+              data:
+                cycle: '{{ cycle }}'
+                zone: '{{ repeat.index }}'
 
-      #=== Wait for script.irrigation_irrigate_a_zone to end
-      - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
-
-      #=== Call the script to irrigate zone 2
-      - service: script.irrigation_irrigate_a_zone
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: 2
-
-      #=== Wait for script.irrigation_irrigate_a_zone to end
-      - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
-      
-      #=== Call the script to irrigate zone 3
-      - service: script.irrigation_irrigate_a_zone
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: 3
-
-      #=== Wait for script.irrigation_irrigate_a_zone to end
-      - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
-      
-      #=== Call the script to irrigate zone 4
-      - service: script.irrigation_irrigate_a_zone
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: 4
-
-      #=== Wait for script.irrigation_irrigate_a_zone to end
-      - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
-
-      #=== Call the script to irrigate zone 5
-      - service: script.irrigation_irrigate_a_zone
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: 5
-
-      #=== Wait for script.irrigation_irrigate_a_zone to end
-      - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
+            #=== Wait for script.irrigation_irrigate_a_zone to end
+            - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
+              timeout: "01:30:00"
+              continue_on_timeout: false
 
       #=== Update progress in ui
       - service: input_text.set_value
@@ -392,7 +371,7 @@ script:
               input_boolean.turn_on
             {% endif %}
         data_template:
-          entity_id: input_boolean.cycle{{ cycle }}_enabled
+          entity_id: input_boolean.cycle{{ cycle }}_enable
 
 
   #==============================
@@ -454,6 +433,8 @@ script:
       - wait_template: >
           {% set entity = 'timer.cycle' + cycle + '_zone_duration' %}
           {{ is_state(entity , 'idle') }}
+        timeout: "01:30:00"
+        continue_on_timeout: false
 
       - service: switch.turn_off
         data_template:
@@ -469,6 +450,8 @@ script:
       - wait_template: >
           {% set entity = 'switch.zone' + zone + '_valve' %}
           {{ is_state(entity , 'off') }}
+        timeout: "00:02:00"
+        continue_on_timeout: false
 
 
   #==================================
