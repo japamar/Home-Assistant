@@ -76,11 +76,7 @@ automation:
         state: 'on'
 
     action:
-      - service: script.irrigation_run_a_cycle
-        data_template:
-          cycle: 1
-
-      - service: script.update_next_runtime
+      - service: script.irrigation_run_scheduled_cycle
         data_template:
           cycle: 1
 
@@ -102,11 +98,7 @@ automation:
         state: 'on'
 
     action:
-      - service: script.irrigation_run_a_cycle
-        data_template:
-          cycle: 2
-
-      - service: script.update_next_runtime
+      - service: script.irrigation_run_scheduled_cycle
         data_template:
           cycle: 2
 
@@ -306,6 +298,22 @@ automation:
 #=== Scripts
 #============
 script:
+
+  #======================================
+  #=== Script to run a scheduled cycle
+  #=== and update its next runtime
+  #=== is passed:
+  #===   {{ cycle }}
+  #======================================
+  irrigation_run_scheduled_cycle:
+    sequence:
+      - service: script.irrigation_run_a_cycle
+        data_template:
+          cycle: '{{ cycle }}'
+
+      - service: script.update_next_runtime
+        data_template:
+          cycle: '{{ cycle }}'
 
   #==========================
   #=== Script to run a cycle
