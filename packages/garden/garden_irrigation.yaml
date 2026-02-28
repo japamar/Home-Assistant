@@ -188,6 +188,8 @@ automation:
 
       #=== Wait until script is finished
       - wait_template: "{{ is_state('script.irrigation_run_a_cycle', 'off') }}"
+        timeout: "06:00:00"
+        continue_on_timeout: false
 
       #=== Turn off both manual run booleans (in case one was turned on
       #=== while the other was already running)
@@ -429,6 +431,8 @@ script:
       - wait_template: >
           {% set entity = 'timer.cycle' + cycle + '_zone_duration' %}
           {{ is_state(entity , 'idle') }}
+        timeout: "01:30:00"
+        continue_on_timeout: false
 
       - service: switch.turn_off
         data_template:
@@ -444,6 +448,8 @@ script:
       - wait_template: >
           {% set entity = 'switch.zone' + zone + '_valve' %}
           {{ is_state(entity , 'off') }}
+        timeout: "00:02:00"
+        continue_on_timeout: false
 
 
   #==================================
