@@ -93,77 +93,61 @@ input_number:
 #============
 #=== Sensors
 #============
-sensor:
-  - platform: template
-    sensors:
+template:
+  - sensor:
       # Weather information sensors
       # Temperature
-      temp_minus0:
-        friendly_name: Temp today
-        value_template: "{{ states('input_number.temp_minus0') }}"     
+      - name: temp_minus0
+        state: "{{ states('input_number.temp_minus0') }}"
         unit_of_measurement: "°C"
 
-      temp_minus1:
-        friendly_name: Temp yesterday
-        value_template: "{{ states('input_number.temp_minus1') }}"     
+      - name: temp_minus1
+        state: "{{ states('input_number.temp_minus1') }}"
         unit_of_measurement: "°C"
 
-      temp_minus2:
-        friendly_name: Temp 2 days ago
-        value_template: "{{ states('input_number.temp_minus2') }}"     
+      - name: temp_minus2
+        state: "{{ states('input_number.temp_minus2') }}"
         unit_of_measurement: "°C"
 
-      temp_minus3:
-        friendly_name: Temp 3 days ago
-        value_template: "{{ states('input_number.temp_minus3') }}"     
+      - name: temp_minus3
+        state: "{{ states('input_number.temp_minus3') }}"
         unit_of_measurement: "°C"
 
-      temp_minus4:
-        friendly_name: Temp 4 days ago
-        value_template: "{{ states('input_number.temp_minus4') }}"     
+      - name: temp_minus4
+        state: "{{ states('input_number.temp_minus4') }}"
         unit_of_measurement: "°C"
 
-      temp_high_2days:
-        friendly_name: Avg 2 day temp
-        value_template: "{{ states('input_number.temp_high_2days') }}"     
+      - name: temp_high_2days
+        state: "{{ states('input_number.temp_high_2days') }}"
         unit_of_measurement: "°C"
 
-      temp_high_5days:
-        friendly_name: Avg 5 day temp
-        value_template: "{{ states('input_number.temp_high_5days') }}"     
+      - name: temp_high_5days
+        state: "{{ states('input_number.temp_high_5days') }}"
         unit_of_measurement: "°C"
-
 
       # Rainfall
-      # rain_minus0:
-      #   friendly_name: Rain today
-      #   value_template: "{{ states('input_number.rain_minus0') | int }}"     
+      # - name: rain_minus0
+      #   state: "{{ states('input_number.rain_minus0') | int }}"
       #   unit_of_measurement: "mm"
 
-      rain_minus0:
-        friendly_name: Rain today
-        value_template: "{{ states('sensor.smartweather_rain_today') }}"     
+      - name: rain_minus0
+        state: "{{ states('sensor.smartweather_rain_today') }}"
         unit_of_measurement: "mm"
 
-      rain_minus1:
-        friendly_name: Rain yesterday
-        value_template: "{{ states('input_number.rain_minus1') }}"     
+      - name: rain_minus1
+        state: "{{ states('input_number.rain_minus1') }}"
         unit_of_measurement: "mm"
 
-      rain_minus2:
-        friendly_name: Rain 2 days ago
-        value_template: "{{ states('input_number.rain_minus2') }}"     
+      - name: rain_minus2
+        state: "{{ states('input_number.rain_minus2') }}"
         unit_of_measurement: "mm"
 
-      rain_minus3:
-        friendly_name: Rain 3 days ago
-        value_template: "{{ states('input_number.rain_minus3') }}"     
+      - name: rain_minus3
+        state: "{{ states('input_number.rain_minus3') }}"
         unit_of_measurement: "mm"
 
-      rain_3days_ratio:
-        friendly_name: Last 3 days rain adj. multiplyer
-        value_template: "{{ states('input_number.rain_3days_ratio') }}"     
-
+      - name: rain_3days_ratio
+        state: "{{ states('input_number.rain_3days_ratio') }}"
 
 #=================
 # === Automations

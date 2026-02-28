@@ -296,158 +296,134 @@ timer:
 #============
 #=== Sensors
 #============
-sensor:
-  - platform: template
-    sensors:
-
-      cycle1_next_run_time:
-        friendly_name: "Next scheduled run time"
-        value_template: >
+template:
+  - sensor:
+      - name: cycle1_next_run_time
+        state: >
           {% if is_state('input_boolean.cycle1_enable', 'on') %}
             {{ state_attr('input_datetime.cycle1_next_run_time', 'timestamp') | timestamp_custom("%a %d %h at %H:%M") }}
           {% else %}
             None
           {% endif %}
 
-      cycle2_next_run_time:
-        friendly_name: "Next scheduled run time"
-        value_template: >
+      - name: cycle2_next_run_time
+        state: >
           {% if is_state('input_boolean.cycle2_enable', 'on') %}
             {{ state_attr('input_datetime.cycle2_next_run_time', 'timestamp') | timestamp_custom("%a %d %h at %H:%M") }}
           {% else %}
             None
           {% endif %}
 
-      cycle1_running:
-        friendly_name: "Morning cycle"
-        value_template: >
+      - name: cycle1_running
+        state: >
           {% if is_state('input_boolean.cycle1_running', 'on') %}
             Running
           {% else %}
             Not running
-          {% endif %}     
-        icon_template: >
+          {% endif %}
+        icon: >
           {% if is_state('input_boolean.cycle1_running', 'on') %}
             mdi:run
           {% else %}
             mdi:human-handsdown
-          {% endif %}     
-          
-      cycle2_running:
-        friendly_name: "Afternoon cycle"
-        value_template: >
+          {% endif %}
+
+      - name: cycle2_running
+        state: >
           {% if is_state('input_boolean.cycle2_running', 'on') %}
             Running
           {% else %}
             Not running
-          {% endif %}     
-        icon_template: >
+          {% endif %}
+        icon: >
           {% if is_state('input_boolean.cycle2_running', 'on') %}
             mdi:run
           {% else %}
             mdi:human-handsdown
-          {% endif %}     
+          {% endif %}
 
-      cycle1_zone_being_watered:
-        friendly_name: "Zone being watered"
-        value_template: "{{ states('input_text.cycle1_current_zone') }}"     
-        
-      cycle2_zone_being_watered:
-        friendly_name: "Zone being watered"
-        value_template: "{{ states('input_text.cycle2_current_zone') }}"     
+      - name: cycle1_zone_being_watered
+        state: "{{ states('input_text.cycle1_current_zone') }}"
 
-      last_irrigated_time:
-        friendly_name: "Last irrigation cycle ended"
-        value_template: >
+      - name: cycle2_zone_being_watered
+        state: "{{ states('input_text.cycle2_current_zone') }}"
+
+      - name: last_irrigated_time
+        state: >
           {{ (as_timestamp(states.input_datetime.last_irrigated_time.state)) | timestamp_custom("%a %d %h at %H:%M") }}
-        
+
       # Zone Times - templated on history_stats sensors
-      zone1_time_today:
-        friendly_name: Zone 1 total watering time today
-        value_template: >
+      - name: zone1_time_today
+        state: >
           {% set duration = states('sensor.zone1_time') %}
           {{ duration|float|multiply(60)|round }}
         unit_of_measurement: mins
 
-      zone2_time_today:
-        friendly_name: Zone 2 total watering time today
-        value_template: >
+      - name: zone2_time_today
+        state: >
           {% set duration = states('sensor.zone2_time') %}
           {{ duration|float|multiply(60)|round }}
         unit_of_measurement: mins
-        
-      zone3_time_today:
-        friendly_name: Zone 3 total watering time today
-        value_template: >
+
+      - name: zone3_time_today
+        state: >
           {% set duration = states('sensor.zone3_time') %}
           {{ duration|float|multiply(60)|round }}
         unit_of_measurement: mins
-        
-      zone4_time_today:
-        friendly_name: Zone 4 total watering time today
-        value_template: >
+
+      - name: zone4_time_today
+        state: >
           {% set duration = states('sensor.zone4_time') %}
           {{ duration|float|multiply(60)|round }}
         unit_of_measurement: mins
-        
-      zone5_time_today:
-        friendly_name: Zone 5 total watering time today
-        value_template: >
+
+      - name: zone5_time_today
+        state: >
           {% set duration = states('sensor.zone5_time') %}
           {{ duration|float|multiply(60)|round }}
         unit_of_measurement: mins
-        
 
-      cycle1_zone1_duration_adjusted:
-        friendly_name: "Zone 1 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone1_duration') | int }}"     
+      - name: cycle1_zone1_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle1_zone1_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle1_zone2_duration_adjusted:
-        friendly_name: "Zone 2 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone2_duration') | int }}"     
+      - name: cycle1_zone2_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle1_zone2_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle1_zone3_duration_adjusted:
-        friendly_name: "Zone 3 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone3_duration') | int }}"     
+      - name: cycle1_zone3_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle1_zone3_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle1_zone4_duration_adjusted:
-        friendly_name: "Zone 4 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone4_duration') | int }}"     
+      - name: cycle1_zone4_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle1_zone4_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle1_zone5_duration_adjusted:
-        friendly_name: "Zone 5 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone5_duration') | int }}"     
+      - name: cycle1_zone5_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle1_zone5_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle2_zone1_duration_adjusted:
-        friendly_name: "Zone 1 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone1_duration') | int }}"     
+      - name: cycle2_zone1_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle2_zone1_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle2_zone2_duration_adjusted:
-        friendly_name: "Zone 2 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone2_duration') | int }}"     
+      - name: cycle2_zone2_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle2_zone2_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle2_zone3_duration_adjusted:
-        friendly_name: "Zone 3 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone3_duration') | int }}"     
+      - name: cycle2_zone3_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle2_zone3_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle2_zone4_duration_adjusted:
-        friendly_name: "Zone 4 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone4_duration') | int }}"     
+      - name: cycle2_zone4_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle2_zone4_duration') | int }}"
         unit_of_measurement: mins
 
-      cycle2_zone5_duration_adjusted:
-        friendly_name: "Zone 5 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone5_duration') | int }}"     
+      - name: cycle2_zone5_duration_adjusted
+        state: "{{ states('input_number.adjusted_cycle2_zone5_duration') | int }}"
         unit_of_measurement: mins
 
+sensor:
   # History sensors
   # Zone Times
   - platform: history_stats
