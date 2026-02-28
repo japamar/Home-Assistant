@@ -350,8 +350,6 @@ script:
 
             #=== Wait for script.irrigation_irrigate_a_zone to end
             - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
-              timeout: "01:30:00"
-              continue_on_timeout: false
 
       #=== Update progress in ui
       - service: input_text.set_value
