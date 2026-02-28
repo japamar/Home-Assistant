@@ -1,0 +1,7 @@
+* text=auto
+
+# Keep config files with consistent LF line endings to reduce noisy diffs/conflicts
+*.yaml text eol=lf
+*.yml  text eol=lf
+*.md   text eol=lf
+*.sh   text eol=lf
