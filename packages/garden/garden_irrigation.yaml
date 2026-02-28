@@ -28,7 +28,7 @@ automation:
     
     action:
       - service: input_datetime.set_datetime
-        data_template:
+        data:
           entity_id: >
             {% if 'cycle1' in trigger.entity_id %}
               input_datetime.cycle1_next_run_time
@@ -129,7 +129,7 @@ automation:
     action:
       #=== Update progress in ui
       - service: input_text.set_value
-        data_template:
+        data:
           entity_id: >
             {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
               input_text.cycle1_current_zone
@@ -141,7 +141,7 @@ automation:
       #=== Make sure nothing in the system is running
       #=== Turn off valves
       - service: homeassistant.turn_off  
-        data_template:
+        data:
           entity_id: group.irrigation_switches
 
       #=== turn off scripts
@@ -178,7 +178,7 @@ automation:
 
       #=== Run a cycle
       - service: script.irrigation_run_a_cycle
-        data_template:
+        data:
           cycle: >
             {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
               1
@@ -234,7 +234,7 @@ automation:
     action:
       #=== Turn off valves
       - service: homeassistant.turn_off  
-        data_template:
+        data:
           entity_id: group.irrigation_switches
 
       #=== Turn off scripts
@@ -246,7 +246,7 @@ automation:
 
       #=== Cancel the timer
       - service: timer.cancel
-        data_template:
+        data:
           entity_id: >
             {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
               timer.cycle1_zone_duration
@@ -256,7 +256,7 @@ automation:
         
       #=== Update progress in ui
       - service: homeassistant.turn_off
-        data_template:
+        data:
           entity_id: >
             {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
               input_boolean.cycle1_running
@@ -265,7 +265,7 @@ automation:
             {% endif %}
 
       - service: input_text.set_value
-        data_template:
+        data:
           entity_id: >
             {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
               input_text.cycle1_current_zone
@@ -288,7 +288,7 @@ automation:
 
     action:
       - service: input_datetime.set_datetime
-        data_template:
+        data:
           entity_id: input_datetime.last_irrigated_time
           date: >
             {{ as_timestamp(now()) | timestamp_custom("%Y-%m-%d") }}
@@ -336,7 +336,7 @@ script:
 
       #=== Update ui to show cycle is running
       - service: homeassistant.turn_on
-        data_template:  
+        data:
           entity_id: input_boolean.cycle{{ cycle }}_running
 
       #=== Run all zones sequentially
@@ -355,12 +355,12 @@ script:
 
       #=== Update progress in ui
       - service: input_text.set_value
-        data_template:
+        data:
           entity_id: input_text.cycle{{ cycle }}_current_zone
           value: 'None'
 
       - service: homeassistant.turn_off  
-        data_template:
+        data:
           entity_id: input_boolean.cycle{{ cycle }}_running
 
       #=== Turn off schedule if run 'Once' selected
@@ -370,7 +370,7 @@ script:
             {% else %}
               input_boolean.turn_on
             {% endif %}
-        data_template:
+        data:
           entity_id: input_boolean.cycle{{ cycle }}_enable
 
 
@@ -400,7 +400,7 @@ script:
           
       #=== Call the script to set the sonoff PULSETIME
       - service: script.set_sonoff_pulsetime
-        data_template:
+        data:
           cycle: '{{ cycle }}'
           zone: '{{ zone }}'
 
@@ -409,17 +409,17 @@ script:
 
       #=== Update progress in ui
       - service: input_text.set_value
-        data_template:
+        data:
           entity_id: 'input_text.cycle{{ cycle }}_current_zone'
           value: '{{ zone }}'
 
       - service: switch.turn_on
-        data_template:
+        data:
           entity_id: switch.zone{{ zone }}_valve
          
       #=== Start timer for zone duration
       - service: timer.start
-        data_template:
+        data:
           entity_id: timer.cycle{{ cycle }}_zone_duration
           duration: >
             {% set duration = states('input_number.cycle' + cycle + '_zone' + zone + '_duration')  | int %}
@@ -437,12 +437,12 @@ script:
         continue_on_timeout: false
 
       - service: switch.turn_off
-        data_template:
+        data:
           entity_id: switch.zone{{ zone }}_valve
 
       #=== Update progress in ui
       - service: input_text.set_value
-        data_template:
+        data:
           entity_id: input_text.cycle{{ cycle }}_current_zone
           value: 'Changing zone...'
 
@@ -462,7 +462,7 @@ script:
   update_next_runtime:
     sequence:
       - service: input_datetime.set_datetime
-        data_template:
+        data:
           entity_id: input_datetime.cycle{{ cycle }}_next_run_time
           date: >
             {% if states('input_select.cycle' + cycle + '_watering_days') == 'Daily' %}
@@ -492,7 +492,7 @@ script:
   set_sonoff_pulsetime:
     sequence:
       - service: mqtt.publish
-        data_template:
+        data:
           topic: >
             sonoff4ch01/cmnd/pulsetime{{ zone }}
           payload: >
